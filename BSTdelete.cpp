@@ -181,11 +181,31 @@ class BiST{
 			//2.find smallest elemnt right side of element
 			//3.replace with this one (basically we replace it)
 			else if(curr->left!=NULL and curr->right!=NULL){
-					Node*temp=findmin(curr->right->data);
-					curr->data=temp->data;
-					if(temp->parent->right==temp){temp->parent->right=NULL;}
-					else {temp->parent->left=NULL;}
-					delete temp;
+				Node*temp=findmin(curr->right->data);
+				curr->data=temp->data;
+					//delete temp;
+			//we can not directly delete temp because it may have more children
+			//that's sure that if it have children then they must be right side
+			//now repalace with parent but with two cases..............
+				if(temp->right==NULL){
+					//means it have no children
+					if(temp->parent->left==temp){temp->parent->left=NULL;delete temp;}
+					else{temp->parent->right=NULL;delete temp;}
+				}
+				//else it have childrens
+				else{
+					if(temp->parent->right==temp){
+						//replace right child to parent
+						temp->right->parent=temp->parent;
+						temp->parent->right=temp->right;
+						delete temp;
+					}
+					else{
+						temp->right->parent=temp->parent;
+						temp->parent->left=temp->right;
+						delete temp;
+					}
+				}		
 			}
 			else{
 			//delete one child node
@@ -241,10 +261,12 @@ int main(){
 	b1.insert(21);
 	b1.insert(34);
 	b1.insert(36);
+	b1.insert(32);
+	b1.insert(33);
 	b1.insert(54);
 	b1.insert(68);
 	//b1.Display();
-	//b1.delet(36);
+	//b1.delet(30);
 	b1.Display();
 	//cout<<b1.Search(1)<<endl;
 	//cout<<b1.findmin(10)->data<<endl;
